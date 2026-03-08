@@ -312,7 +312,6 @@ function deleteHistoryItem(index) {
 }
 
 function renderHistory() {
-  const currentLang = localStorage.getItem('language') || 'tr';
   let history = JSON.parse(localStorage.getItem('downloadHistory')) || [];
 
   historyListModal.innerHTML = '';
