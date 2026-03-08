@@ -2,6 +2,7 @@
 node_modules/
 
 # Binaries and large files
+agents.md
 ffmpeg.exe
 yt-dlp.exe
 ffmpeg_extracted/

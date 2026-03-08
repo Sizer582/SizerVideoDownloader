@@ -43,7 +43,11 @@ const dict = {
     pleaseEnterLink: "Lütfen link girin.",
     historyTitle: "İndirme Geçmişi",
     qualityBestMp4: "En Yüksek (MP4)",
-    qualityBestMkv: "En Yüksek (MKV)"
+    qualityBestMkv: "En Yüksek (MKV)",
+    clearHistory: "Tümünü Temizle",
+    deleteItem: "Sil",
+    confirmClear: "Tüm indirme geçmişini temizlemek istediğinize emin misiniz?",
+    historyEmpty: "Geçmiş henüz boş."
   },
   en: {
     statusReady: "Ready",
@@ -60,7 +64,11 @@ const dict = {
     pleaseEnterLink: "Please enter a link.",
     historyTitle: "Download History",
     qualityBestMp4: "Highest (MP4)",
-    qualityBestMkv: "Highest (MKV)"
+    qualityBestMkv: "Highest (MKV)",
+    clearHistory: "Clear All",
+    deleteItem: "Delete",
+    confirmClear: "Are you sure you want to clear all download history?",
+    historyEmpty: "History is empty."
   }
 };
 
@@ -282,9 +290,10 @@ const openHistoryBtn = document.getElementById('openHistoryBtn');
 const closeHistoryBtn = document.getElementById('closeHistoryBtn');
 const historyModal = document.getElementById('historyModal');
 const historyListModal = document.getElementById('history-list-modal');
+const clearHistoryBtn = document.getElementById('clear-history-btn');
 
 openHistoryBtn.addEventListener('click', () => {
-  renderHistory(); // İçeriği son halinden güncelle
+  renderHistory();
   historyModal.style.display = 'flex';
 });
 
@@ -292,67 +301,75 @@ closeHistoryBtn.addEventListener('click', () => {
   historyModal.style.display = 'none';
 });
 
+clearHistoryBtn.addEventListener('click', () => {
+  const currentLang = localStorage.getItem('language') || 'tr';
+  if (confirm(dict[currentLang].confirmClear)) {
+    localStorage.removeItem('downloadHistory');
+    renderHistory();
+  }
+});
+
 function saveToHistory(title, thumbnail, path) {
   let history = JSON.parse(localStorage.getItem('downloadHistory')) || [];
-
-  // Aynı dosya varsa silip en başa tekrar ekleyelim ki en üstte görünsün.
   history = history.filter(h => h.path !== path);
-
-  history.unshift({ title, thumbnail, path }); // Başa ekle
-  // Limitsiz olması istendi (scroll yapılabilmesi için), dilenirse güvenlik için max 50-100 limit koyulabilir.
+  history.unshift({ title, thumbnail, path, date: new Date().toLocaleString() });
   if (history.length > 50) history = history.slice(0, 50);
-
   localStorage.setItem('downloadHistory', JSON.stringify(history));
 }
 
+function deleteHistoryItem(index) {
+  let history = JSON.parse(localStorage.getItem('downloadHistory')) || [];
+  history.splice(index, 1);
+  localStorage.setItem('downloadHistory', JSON.stringify(history));
+  renderHistory();
+}
+
 function renderHistory() {
+  const currentLang = localStorage.getItem('language') || 'tr';
   let history = JSON.parse(localStorage.getItem('downloadHistory')) || [];
 
   historyListModal.innerHTML = '';
 
   if (history.length === 0) {
-    historyListModal.innerHTML = `<p style="color:#666; text-align:center; font-size:14px;">Geçmiş boş / History is empty.</p>`;
+    historyListModal.innerHTML = `<div style="text-align:center; padding:40px; color:#666;">
+      <p>${dict[currentLang].historyEmpty}</p>
+    </div>`;
+    clearHistoryBtn.style.display = 'none';
     return;
   }
 
-  history.forEach(item => {
-    let div = document.createElement('div');
-    div.className = 'history-item-modal';
+  clearHistoryBtn.style.display = 'flex';
 
-    let img = document.createElement('img');
-    img.className = 'history-thumb';
-    // Eğer analizde thumbnail yoksa şablon gri renk atarız.
-    img.src = item.thumbnail || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="45"><rect width="80" height="45" fill="%23333"/></svg>';
+  history.forEach((item, index) => {
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'history-item';
 
-    let detailsDiv = document.createElement('div');
-    detailsDiv.className = 'history-details';
+    itemDiv.innerHTML = `
+      <img src="${item.thumbnail || 'assets/icon.png'}" class="history-thumb" onerror="this.src='assets/icon.png'">
+      <div class="history-info">
+        <div class="title" title="${item.title}">${item.title}</div>
+        <div class="date">${item.date || ''}</div>
+      </div>
+      <div style="display: flex; gap: 5px;">
+        <button class="modal-action-btn" title="Klasör / Folder">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z" />
+          </svg>
+        </button>
+        <button class="delete-history-btn" title="${dict[currentLang].deleteItem}">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6" />
+          </svg>
+        </button>
+      </div>
+    `;
 
-    let titleSpan = document.createElement('span');
-    titleSpan.className = 'history-title-modal';
-    titleSpan.innerText = item.title;
-    titleSpan.title = item.title;
+    // Folder button
+    itemDiv.querySelectorAll('button')[0].onclick = () => window.api.send('open-folder', item.path);
+    // Delete button
+    itemDiv.querySelectorAll('button')[1].onclick = () => deleteHistoryItem(index);
 
-    let actionsDiv = document.createElement('div');
-    actionsDiv.className = 'history-actions-modal';
-
-    let folderBtn = document.createElement('button');
-    folderBtn.innerHTML = '📂 Klasör';
-    folderBtn.onclick = () => window.api.send('open-folder', item.path);
-
-    let playBtn = document.createElement('button');
-    playBtn.innerHTML = '▶ Oynat';
-    playBtn.onclick = () => window.api.send('play-video', item.path);
-
-    actionsDiv.appendChild(folderBtn);
-    actionsDiv.appendChild(playBtn);
-
-    detailsDiv.appendChild(titleSpan);
-    detailsDiv.appendChild(actionsDiv);
-
-    div.appendChild(img);
-    div.appendChild(detailsDiv);
-
-    historyListModal.appendChild(div);
+    historyListModal.appendChild(itemDiv);
   });
 }
 
