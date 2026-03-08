@@ -159,6 +159,7 @@ ipcMain.on('start-download', async (event, data) => {
 
     // --- KALİTE VE SES AYARLARI ---
     const qualityMap = {
+      'best': { format: 'bestvideo+bestaudio/best', isAudio: false },
       '8k': { format: 'bestvideo[height<=4320]+bestaudio/best[height<=4320]', isAudio: false },
       '4k': { format: 'bestvideo[height<=2160]+bestaudio/best[height<=2160]', isAudio: false },
       '2k': { format: 'bestvideo[height<=1440]+bestaudio/best[height<=1440]', isAudio: false },

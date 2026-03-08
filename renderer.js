@@ -41,7 +41,8 @@ const dict = {
     settingsTitle: "Ayarlar",
     languageLabel: "Dil",
     pleaseEnterLink: "Lütfen link girin.",
-    historyTitle: "İndirme Geçmişi"
+    historyTitle: "İndirme Geçmişi",
+    qualityBest: "En Yüksek (Otomatik)"
   },
   en: {
     statusReady: "Ready",
@@ -56,7 +57,8 @@ const dict = {
     settingsTitle: "Settings",
     languageLabel: "Language",
     pleaseEnterLink: "Please enter a link.",
-    historyTitle: "Download History"
+    historyTitle: "Download History",
+    qualityBest: "Highest (Automatic)"
   }
 };
 
@@ -160,7 +162,16 @@ window.api.on('analysis-complete', (data) => {
 
   Array.from(qualitySelect.options).forEach(opt => {
     let hide = false;
-    const qKey = opt.value.split('-')[0];
+    const qValue = opt.value;
+
+    // "best" is always visible
+    if (qValue === 'best') {
+      opt.style.display = '';
+      opt.disabled = false;
+      return;
+    }
+
+    const qKey = qValue.split('-')[0];
     if (heightMap[qKey] && maxHeight < heightMap[qKey]) {
       hide = true;
     }
@@ -173,6 +184,9 @@ window.api.on('analysis-complete', (data) => {
       opt.disabled = false;
     }
   });
+
+  // Always default to "best"
+  qualitySelect.value = 'best';
 
   // Arayüzü Değiştir
   inputSection.style.display = 'none';
