@@ -44,9 +44,7 @@ const dict = {
     historyTitle: "İndirme Geçmişi",
     qualityBestMp4: "En Yüksek (MP4)",
     qualityBestMkv: "En Yüksek (MKV)",
-    clearHistory: "Tümünü Temizle",
     deleteItem: "Sil",
-    confirmClear: "Tüm indirme geçmişini temizlemek istediğinize emin misiniz?",
     historyEmpty: "Geçmiş henüz boş."
   },
   en: {
@@ -65,9 +63,7 @@ const dict = {
     historyTitle: "Download History",
     qualityBestMp4: "Highest (MP4)",
     qualityBestMkv: "Highest (MKV)",
-    clearHistory: "Clear All",
     deleteItem: "Delete",
-    confirmClear: "Are you sure you want to clear all download history?",
     historyEmpty: "History is empty."
   }
 };
@@ -290,7 +286,6 @@ const openHistoryBtn = document.getElementById('openHistoryBtn');
 const closeHistoryBtn = document.getElementById('closeHistoryBtn');
 const historyModal = document.getElementById('historyModal');
 const historyListModal = document.getElementById('history-list-modal');
-const clearHistoryBtn = document.getElementById('clear-history-btn');
 
 openHistoryBtn.addEventListener('click', () => {
   renderHistory();
@@ -299,14 +294,6 @@ openHistoryBtn.addEventListener('click', () => {
 
 closeHistoryBtn.addEventListener('click', () => {
   historyModal.style.display = 'none';
-});
-
-clearHistoryBtn.addEventListener('click', () => {
-  const currentLang = localStorage.getItem('language') || 'tr';
-  if (confirm(dict[currentLang].confirmClear)) {
-    localStorage.removeItem('downloadHistory');
-    renderHistory();
-  }
 });
 
 function saveToHistory(title, thumbnail, path) {
@@ -334,11 +321,8 @@ function renderHistory() {
     historyListModal.innerHTML = `<div style="text-align:center; padding:40px; color:#666;">
       <p>${dict[currentLang].historyEmpty}</p>
     </div>`;
-    clearHistoryBtn.style.display = 'none';
     return;
   }
-
-  clearHistoryBtn.style.display = 'flex';
 
   history.forEach((item, index) => {
     const itemDiv = document.createElement('div');

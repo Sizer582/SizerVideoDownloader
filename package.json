@@ -5,7 +5,7 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-packager . --platform=win32 --arch=x64 --overwrite"
+    "build": "electron-packager . --platform=win32 --arch=x64 --icon=assets/icon.ico --overwrite"
   },
   "author": "Sizer",
   "license": "ISC",
