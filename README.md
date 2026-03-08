@@ -37,7 +37,7 @@ Sizer Video Downloader is an Electron-based desktop application designed to swif
 #### Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/SizerVideoDownloader.git
+   git clone https://github.com/Sizer582/SizerVideoDownloader.git
    cd SizerVideoDownloader
    ```
 2. Install the required Node dependencies:
@@ -79,7 +79,7 @@ Sizer Video Downloader, masaüstünden çeşitli platformlardaki (YouTube, Daily
 #### Kurulum
 1. Repoyu klonlayın:
    ```bash
-   git clone https://github.com/your-username/SizerVideoDownloader.git
+   git clone https://github.com/Sizer582/SizerVideoDownloader.git
    cd SizerVideoDownloader
    ```
 2. Gerekli kütüphaneleri yükleyin:
