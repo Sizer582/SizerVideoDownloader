@@ -1,4 +1,4 @@
-  <img src="icon.png" alt="Logo" width="100" />
+  <img src="assets/icon.png" alt="Logo" width="100" />
   <h1>Sizer Video Downloader ⚡</h1>
   <p><strong>Professional, Fast, and Secure Video Downloader for Desktop</strong></p>
   
