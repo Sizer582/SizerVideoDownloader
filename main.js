@@ -121,7 +121,7 @@ ipcMain.on('start-download', async (event, data) => {
     let ext = 'mp4';
     let typeName = 'Video';
 
-    // Parse the new quality format e.g., '1080p-mkv'
+    // Parse the new quality format e.g., '1080p-mkv', 'best-mkv'
     let isMkv = quality.endsWith('-mkv');
     let isMp4 = quality.endsWith('-mp4');
     let baseQuality = quality.replace('-mkv', '').replace('-mp4', '');

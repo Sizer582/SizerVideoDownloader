@@ -42,7 +42,8 @@ const dict = {
     languageLabel: "Dil",
     pleaseEnterLink: "Lütfen link girin.",
     historyTitle: "İndirme Geçmişi",
-    qualityBest: "En Yüksek (Otomatik)"
+    qualityBestMp4: "En Yüksek (MP4)",
+    qualityBestMkv: "En Yüksek (MKV)"
   },
   en: {
     statusReady: "Ready",
@@ -58,7 +59,8 @@ const dict = {
     languageLabel: "Language",
     pleaseEnterLink: "Please enter a link.",
     historyTitle: "Download History",
-    qualityBest: "Highest (Automatic)"
+    qualityBestMp4: "Highest (MP4)",
+    qualityBestMkv: "Highest (MKV)"
   }
 };
 
@@ -164,8 +166,8 @@ window.api.on('analysis-complete', (data) => {
     let hide = false;
     const qValue = opt.value;
 
-    // "best" is always visible
-    if (qValue === 'best') {
+    // "best" options are always visible
+    if (qValue === 'best-mp4' || qValue === 'best-mkv') {
       opt.style.display = '';
       opt.disabled = false;
       return;
@@ -185,8 +187,8 @@ window.api.on('analysis-complete', (data) => {
     }
   });
 
-  // Always default to "best"
-  qualitySelect.value = 'best';
+  // Always default to "best-mp4"
+  qualitySelect.value = 'best-mp4';
 
   // Arayüzü Değiştir
   inputSection.style.display = 'none';
